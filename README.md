@@ -1,138 +1,176 @@
-# Clinical Trial Data Platform
+<div align="center">
 
-[![CI/CD Pipeline](https://github.com/Wrek34/clinical-trial-data-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Wrek34/clinical-trial-data-platform/actions/workflows/ci.yml)
-[![Infrastructure](https://img.shields.io/badge/IaC-Terraform-purple)](https://www.terraform.io/)
-[![AWS](https://img.shields.io/badge/Cloud-AWS-orange)](https://aws.amazon.com/)
-[![Python](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/)
-[![CDISC](https://img.shields.io/badge/Standard-CDISC%20SDTM-green)](https://www.cdisc.org/)
+# 🏥 Clinical Trial Data Platform
 
-> A production-grade data engineering platform for pharmaceutical clinical trial data, built on AWS with CDISC compliance, comprehensive data quality frameworks, and complete audit trails.
+### Production-Grade Data Engineering for Pharmaceutical R&D
+
+[![CI Pipeline](https://github.com/Wrek34/clinical-trial-data-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Wrek34/clinical-trial-data-platform/actions/workflows/ci.yml)
+&nbsp;
+[![Terraform](https://img.shields.io/badge/IaC-Terraform-7B42BC?logo=terraform)](https://www.terraform.io/)
+&nbsp;
+[![AWS](https://img.shields.io/badge/Cloud-AWS-FF9900?logo=amazonaws)](https://aws.amazon.com/)
+&nbsp;
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+&nbsp;
+[![CDISC](https://img.shields.io/badge/Standard-CDISC%20SDTM-00A99D)](https://www.cdisc.org/)
+
+<br/>
+
+[Features](#-features) •
+[Architecture](#-architecture) •
+[Quick Start](#-quick-start) •
+[Documentation](#-documentation)
+
+<br/>
+
+<img src="https://raw.githubusercontent.com/Wrek34/clinical-trial-data-platform/main/docs/architecture/banner.png" alt="Platform Banner" width="800"/>
+
+</div>
 
 ---
 
-## 🎯 Project Overview
+## 🎯 Overview
 
-This platform demonstrates end-to-end data engineering capabilities for regulated pharmaceutical environments:
+A **production-grade data platform** for pharmaceutical clinical trials that transforms raw study data into regulatory-compliant, analytics-ready datasets.
 
-- **Ingests** raw clinical trial data from multiple sources
-- **Validates** data quality with 20+ automated checks
-- **Transforms** to CDISC SDTM regulatory standards
-- **Serves** analytics-ready dimensional models
-- **Tracks** complete data lineage for audit compliance
+<table>
+<tr>
+<td width="50%">
 
-### Why This Project?
+### The Challenge
 
-Clinical trial data engineering presents unique challenges:
-1. **Regulatory Compliance**: FDA 21 CFR Part 11 requires complete audit trails
-2. **Data Standards**: CDISC SDTM is mandatory for drug submissions
-3. **Data Quality**: Patient safety depends on data accuracy
-4. **Scale**: Modern trials generate millions of data points
+Clinical trial data engineering is uniquely complex:
 
-This platform addresses all four challenges with a modern, cloud-native architecture.
+- 📋 **Regulatory Compliance** - FDA 21 CFR Part 11
+- 📊 **Data Standards** - CDISC SDTM mandatory
+- ✅ **Data Quality** - Patient safety depends on it
+- 📈 **Scale** - Millions of data points per study
+
+</td>
+<td width="50%">
+
+### The Solution
+
+This platform addresses all four:
+
+- 🔒 **Complete Audit Trails** - Every change tracked
+- 🏷️ **CDISC Native** - Built for SDTM from day one
+- 🛡️ **20+ Validation Rules** - Automated quality gates
+- ☁️ **Serverless Scale** - Pay only for what you use
+
+</td>
+</tr>
+</table>
+
+---
+
+## ✨ Features
+
+<table>
+<tr>
+<td align="center" width="25%">
+<img src="https://img.icons8.com/fluency/96/000000/database.png" width="48"/>
+<br/><b>Medallion Architecture</b>
+<br/><sub>Bronze → Silver → Gold layers</sub>
+</td>
+<td align="center" width="25%">
+<img src="https://img.icons8.com/fluency/96/000000/checked.png" width="48"/>
+<br/><b>Data Quality</b>
+<br/><sub>20+ automated validation rules</sub>
+</td>
+<td align="center" width="25%">
+<img src="https://img.icons8.com/fluency/96/000000/flow-chart.png" width="48"/>
+<br/><b>Data Lineage</b>
+<br/><sub>Complete audit trail tracking</sub>
+</td>
+<td align="center" width="25%">
+<img src="https://img.icons8.com/fluency/96/000000/medical-doctor.png" width="48"/>
+<br/><b>CDISC Compliant</b>
+<br/><sub>FDA/EMA submission ready</sub>
+</td>
+</tr>
+</table>
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                     CLINICAL TRIAL DATA PLATFORM                        │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  ┌─────────────┐     ┌─────────────────────────────────────────────┐   │
-│  │   SOURCE    │     │              AWS DATA LAKE                   │   │
-│  │   SYSTEMS   │     │                                              │   │
-│  │             │     │  ┌─────────┐  ┌─────────┐  ┌─────────┐      │   │
-│  │ • EDC       │────▶│  │ BRONZE  │─▶│ SILVER  │─▶│  GOLD   │      │   │
-│  │ • Labs      │     │  │  (Raw)  │  │(Valid)  │  │(Serving)│      │   │
-│  │ • Devices   │     │  └─────────┘  └─────────┘  └─────────┘      │   │
-│  └─────────────┘     │       │            │            │            │   │
-│                      │       ▼            ▼            ▼            │   │
-│                      │  ┌─────────────────────────────────────────┐ │   │
-│                      │  │         Amazon S3 Data Lake             │ │   │
-│                      │  └─────────────────────────────────────────┘ │   │
-│                      └─────────────────────────────────────────────┘   │
-│                                                                         │
-│  ┌─────────────────────────────────────────────────────────────────┐   │
-│  │                    PROCESSING LAYER                              │   │
-│  │  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │   │
-│  │  │  Lambda  │    │   Glue   │    │   Glue   │    │ Redshift │  │   │
-│  │  │ Ingest   │    │ Bronze→  │    │ Silver→  │    │Serverless│  │   │
-│  │  │          │    │ Silver   │    │ Gold     │    │          │  │   │
-│  │  └──────────┘    └──────────┘    └──────────┘    └──────────┘  │   │
-│  └─────────────────────────────────────────────────────────────────┘   │
-│                                                                         │
-│  ┌─────────────────────────────────────────────────────────────────┐   │
-│  │                 GOVERNANCE & QUALITY                             │   │
-│  │  • Data Validation (20+ rules)    • CDISC SDTM Compliance       │   │
-│  │  • Lineage Tracking               • Audit Logging                │   │
-│  └─────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        CLINICAL TRIAL DATA PLATFORM                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ┌──────────┐      ┌─────────────────────────────────────────────────┐    │
+│   │  SOURCE  │      │               AWS DATA LAKE (S3)                │    │
+│   │ SYSTEMS  │      │                                                 │    │
+│   │          │      │   ┌─────────┐   ┌─────────┐   ┌─────────┐      │    │
+│   │ • EDC    │ ───▶ │   │ BRONZE  │──▶│ SILVER  │──▶│  GOLD   │      │    │
+│   │ • Labs   │      │   │  (Raw)  │   │(Valid)  │   │(Serving)│      │    │
+│   │ • Devices│      │   └─────────┘   └─────────┘   └─────────┘      │    │
+│   └──────────┘      │        │             │             │           │    │
+│                     │        ▼             ▼             ▼           │    │
+│                     │   ┌─────────────────────────────────────┐      │    │
+│                     │   │     Lambda  │  Glue ETL  │ Redshift │      │    │
+│                     │   └─────────────────────────────────────┘      │    │
+│                     └─────────────────────────────────────────────────┘    │
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐  │
+│   │  📋 Validation    📊 Lineage    🔐 IAM    📈 CloudWatch    🏷️ CDISC │  │
+│   └─────────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Medallion Architecture
 
-| Layer | Purpose | Retention | Format |
-|-------|---------|-----------|--------|
-| **Bronze** | Raw data exactly as received | 7 years (regulatory) | Parquet |
-| **Silver** | Validated, CDISC-standardized | 7 years | Parquet |
-| **Gold** | Analytics-ready dimensional model | Rebuild from Silver | Parquet |
+| Layer | Purpose | Retention | Key Feature |
+|:------|:--------|:----------|:------------|
+| 🥉 **Bronze** | Raw data preservation | 7 years | Immutable audit trail |
+| 🥈 **Silver** | Validated & standardized | 7 years | CDISC SDTM compliant |
+| 🥇 **Gold** | Analytics-ready | Rebuildable | Dimensional model |
 
 ---
 
-## 🔬 CDISC Compliance
+## 🔬 CDISC Domains
 
-The platform implements **CDISC SDTM** (Study Data Tabulation Model) standards required by FDA and EMA:
-
-| Domain | Description | Key Variables |
-|--------|-------------|---------------|
-| **DM** | Demographics | USUBJID, AGE, SEX, RACE, ARM |
-| **AE** | Adverse Events | AETERM, AESEV, AEREL, AESTDTC |
-| **VS** | Vital Signs | VSTESTCD, VSORRES, VSNRIND |
-| **LB** | Lab Results | LBTESTCD, LBSTRESN, LBNRIND |
-
----
-
-## ✅ Data Quality Framework
-
-Comprehensive validation framework with 20+ automated checks:
-
-```python
-from data_quality.validators import validate_clinical_data, ValidationStatus
-
-report = validate_clinical_data(df, domain="DM")
-
-if report.status == ValidationStatus.PASSED:
-    promote_to_silver(df)
-else:
-    quarantine_for_review(df, report)
-```
-
-### Sample Validation Rules
-
-| Rule ID | Domain | Description | Severity |
-|---------|--------|-------------|----------|
-| DM_001 | Demographics | USUBJID must be unique | ERROR |
-| DM_003 | Demographics | Age between 0-120 | ERROR |
-| AE_003 | Adverse Events | Severity must be MILD/MODERATE/SEVERE | ERROR |
-| VS_004 | Vital Signs | Values within physiological range | WARNING |
-
----
-
-## 📊 Analytics Capabilities
-
-Pre-built SQL analytics for the Gold layer:
-
-- **Enrollment Dashboard**: Subjects by site, treatment arm, demographics
-- **Safety Analysis**: Adverse event rates, serious AE tracking
-- **Efficacy Metrics**: Vital signs trends, lab results analysis
-- **Data Quality**: Completeness reports, validation summaries
+<table>
+<tr>
+<th>Domain</th>
+<th>Description</th>
+<th>Key Variables</th>
+<th>Validation Rules</th>
+</tr>
+<tr>
+<td><b>DM</b></td>
+<td>Demographics</td>
+<td><code>USUBJID</code>, <code>AGE</code>, <code>SEX</code>, <code>ARM</code></td>
+<td>6 rules</td>
+</tr>
+<tr>
+<td><b>AE</b></td>
+<td>Adverse Events</td>
+<td><code>AETERM</code>, <code>AESEV</code>, <code>AESER</code></td>
+<td>5 rules</td>
+</tr>
+<tr>
+<td><b>VS</b></td>
+<td>Vital Signs</td>
+<td><code>VSTESTCD</code>, <code>VSSTRESN</code>, <code>VSNRIND</code></td>
+<td>4 rules</td>
+</tr>
+<tr>
+<td><b>LB</b></td>
+<td>Lab Results</td>
+<td><code>LBTESTCD</code>, <code>LBSTRESN</code>, <code>LBNRIND</code></td>
+<td>4 rules</td>
+</tr>
+</table>
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - AWS Account with CLI configured
 - Python 3.11+
 - Terraform 1.5+
@@ -140,24 +178,23 @@ Pre-built SQL analytics for the Gold layer:
 ### Deploy
 
 ```bash
-# Clone and navigate
+# Clone repository
 git clone https://github.com/Wrek34/clinical-trial-data-platform.git
 cd clinical-trial-data-platform
+
+# Generate test data
+python data/synthetic/generator.py --subjects 500
 
 # Deploy infrastructure
 cd infrastructure/terraform
 terraform init
 terraform apply -var-file="environments/dev.tfvars"
 
-# Generate test data
-cd ../..
-python data/synthetic/generator.py --subjects 500
-
-# Upload to S3
-aws s3 cp data/synthetic/output/ s3://YOUR-BUCKET/bronze/synthetic/ --recursive
+# Upload data to S3
+aws s3 cp ../../data/synthetic/output/ s3://YOUR-BUCKET/bronze/ --recursive
 ```
 
-### Teardown (Avoid Charges)
+### Teardown
 
 ```bash
 terraform destroy -var-file="environments/dev.tfvars"
@@ -169,17 +206,18 @@ terraform destroy -var-file="environments/dev.tfvars"
 
 ```
 clinical-trial-data-platform/
-├── data/synthetic/           # CDISC-compliant test data generator
-├── docs/
-│   ├── architecture/         # System design docs
-│   └── adr/                  # Architecture Decision Records
-├── infrastructure/terraform/ # IaC modules (S3, Lambda, Glue, IAM)
-├── src/
-│   ├── ingestion/            # Lambda handlers
-│   ├── transformation/       # Glue ETL scripts
-│   ├── data_quality/         # Validation & lineage
-│   └── analytics/            # SQL queries
-└── .github/workflows/        # CI/CD pipelines
+├── 📊 data/synthetic/          # CDISC test data generator
+├── 📚 docs/
+│   ├── architecture/           # System design & diagrams
+│   └── adr/                    # Architecture decisions
+├── 🏗️ infrastructure/terraform/
+│   └── modules/                # S3, Lambda, Glue, IAM
+├── 💻 src/
+│   ├── ingestion/              # Lambda handlers
+│   ├── transformation/         # Glue ETL scripts
+│   ├── data_quality/           # Validators & lineage
+│   └── analytics/              # SQL queries
+└── ⚙️ .github/workflows/       # CI/CD pipelines
 ```
 
 ---
@@ -187,44 +225,69 @@ clinical-trial-data-platform/
 ## 💰 Cost Optimization
 
 | Environment | Monthly Cost | Strategy |
-|-------------|--------------|----------|
-| **Development** | ~$3 | Serverless, auto-pause, aggressive lifecycle |
-| **Production** | ~$350 | Scaled compute, standard retention |
+|:------------|:-------------|:---------|
+| 🔧 **Development** | ~$3 | Serverless, auto-pause |
+| 🚀 **Production** | ~$350 | Scaled, standard retention |
 
 ---
 
-## 🛠️ Technology Stack
+## 🛠️ Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| Cloud | AWS (S3, Lambda, Glue, Redshift Serverless) |
-| IaC | Terraform |
-| Language | Python 3.11, PySpark, SQL |
-| CI/CD | GitHub Actions |
-| Testing | pytest |
-| Standards | CDISC SDTM 3.3 |
+<table>
+<tr>
+<td align="center"><img src="https://img.icons8.com/color/48/000000/amazon-web-services.png"/><br/><b>AWS</b></td>
+<td align="center"><img src="https://img.icons8.com/color/48/000000/terraform.png"/><br/><b>Terraform</b></td>
+<td align="center"><img src="https://img.icons8.com/color/48/000000/python.png"/><br/><b>Python</b></td>
+<td align="center"><img src="https://img.icons8.com/color/48/000000/apache-spark.png"/><br/><b>PySpark</b></td>
+<td align="center"><img src="https://img.icons8.com/color/48/000000/postgreesql.png"/><br/><b>SQL</b></td>
+<td align="center"><img src="https://img.icons8.com/color/48/000000/github.png"/><br/><b>GitHub Actions</b></td>
+</tr>
+</table>
 
 ---
 
 ## 📚 Documentation
 
-- [Architecture Overview](docs/architecture/ARCHITECTURE.md)
-- [Data Model](docs/architecture/DATA_MODEL.md)
-- [ADR-001: AWS-Native Approach](docs/adr/001-aws-native-approach.md)
-- [ADR-002: Medallion Architecture](docs/adr/002-medallion-architecture.md)
-- [ADR-003: CDISC Compliance](docs/adr/003-cdisc-compliance.md)
-- [ADR-004: Cost Optimization](docs/adr/004-cost-optimization.md)
+| Document | Description |
+|:---------|:------------|
+| [Architecture Overview](docs/architecture/ARCHITECTURE.md) | System design |
+| [Architecture Diagrams](docs/architecture/DIAGRAMS.md) | Visual diagrams |
+| [Data Model](docs/architecture/DATA_MODEL.md) | CDISC specifications |
+| [ADR-001: AWS Native](docs/adr/001-aws-native-approach.md) | Why AWS |
+| [ADR-002: Medallion](docs/adr/002-medallion-architecture.md) | Why medallion |
+| [ADR-003: CDISC](docs/adr/003-cdisc-compliance.md) | CDISC implementation |
+| [ADR-004: Cost](docs/adr/004-cost-optimization.md) | Cost strategy |
 
 ---
 
 ## 👤 Author
 
-Built by a data engineer with 7 years of military healthcare experience and Columbia University CS background.
-
-- GitHub: [@Wrek34](https://github.com/Wrek34)
+<table>
+<tr>
+<td>
+<b>Background</b><br/>
+• 7 years military healthcare<br/>
+• Columbia University CS<br/>
+• Healthcare data engineering focus
+</td>
+<td>
+<b>Connect</b><br/>
+• GitHub: <a href="https://github.com/Wrek34">@Wrek34</a><br/>
+• LinkedIn: [Your LinkedIn]
+</td>
+</tr>
+</table>
 
 ---
+
+<div align="center">
 
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) for details.
+
+<br/>
+
+**Built with ❤️ for better clinical trials**
+
+</div>

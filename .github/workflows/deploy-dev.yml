@@ -1,15 +1,14 @@
 # Deploy to Development Environment
-# Triggered on push to main or manually
+# This workflow only runs when manually triggered
+# For automatic deployment, configure AWS_ROLE_ARN secret
 
 name: Deploy to Dev
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       confirm:
-        description: 'Type "deploy" to confirm'
+        description: 'Type "deploy" to confirm deployment'
         required: true
         default: ''
 
@@ -22,81 +21,23 @@ jobs:
   deploy:
     name: Deploy Infrastructure
     runs-on: ubuntu-latest
-    # Only run on workflow_dispatch if confirmed, always run on push
-    if: github.event_name == 'push' || github.event.inputs.confirm == 'deploy'
-    
-    permissions:
-      id-token: write  # Required for OIDC
-      contents: read
+    if: github.event.inputs.confirm == 'deploy'
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
-      
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TERRAFORM_VERSION }}
-      
-      - name: Terraform Init
-        run: terraform init
-        working-directory: infrastructure/terraform
-      
-      - name: Select Workspace
+      - name: Deployment Notice
         run: |
-          terraform workspace select ${{ env.ENVIRONMENT }} || \
-          terraform workspace new ${{ env.ENVIRONMENT }}
-        working-directory: infrastructure/terraform
-      
-      - name: Terraform Plan
-        run: |
-          terraform plan \
-            -var-file=environments/${{ env.ENVIRONMENT }}.tfvars \
-            -out=tfplan
-        working-directory: infrastructure/terraform
-      
-      - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
-        working-directory: infrastructure/terraform
-      
-      - name: Upload Glue Scripts
-        run: |
-          # Get bucket name from Terraform output
-          BUCKET=$(terraform output -raw data_bucket_name)
-          
-          # Upload Glue scripts
-          aws s3 cp src/transformation/glue_jobs/ \
-            s3://${BUCKET}/scripts/glue/ \
-            --recursive
-        working-directory: infrastructure/terraform
-      
-      - name: Deploy Lambda Code
-        run: |
-          # Package Lambda
-          cd src/ingestion
-          zip -r ../../lambda.zip .
-          cd ../..
-          
-          # Get function name from Terraform
-          FUNCTION=$(terraform -chdir=infrastructure/terraform output -raw ingestion_lambda_name)
-          
-          # Update Lambda code
-          aws lambda update-function-code \
-            --function-name ${FUNCTION} \
-            --zip-file fileb://lambda.zip
-      
-      - name: Deployment Summary
-        run: |
-          echo "## Deployment Complete! 🚀" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Environment:** ${{ env.ENVIRONMENT }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Region:** ${{ env.AWS_REGION }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Resources Deployed:" >> $GITHUB_STEP_SUMMARY
-          terraform -chdir=infrastructure/terraform output deployment_summary >> $GITHUB_STEP_SUMMARY
+          echo "============================================"
+          echo "MANUAL DEPLOYMENT MODE"
+          echo "============================================"
+          echo ""
+          echo "This workflow requires AWS credentials to be configured."
+          echo ""
+          echo "To enable automated deployments:"
+          echo "1. Go to Settings > Secrets and variables > Actions"
+          echo "2. Add AWS_ROLE_ARN or AWS access keys"
+          echo ""
+          echo "For now, deploy manually using:"
+          echo "  cd infrastructure/terraform"
+          echo "  terraform apply -var-file=environments/dev.tfvars"
+          echo ""
+          echo "============================================"
