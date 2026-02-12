@@ -10,16 +10,6 @@ terraform {
       version = "~> 5.0"
     }
   }
-  
-  # Backend configuration for state management
-  # Uncomment and configure for production use
-  # backend "s3" {
-  #   bucket         = "clinical-trial-terraform-state"
-  #   key            = "platform/terraform.tfstate"
-  #   region         = "us-east-1"
-  #   encrypt        = true
-  #   dynamodb_table = "terraform-state-lock"
-  # }
 }
 
 # AWS Provider Configuration
@@ -141,27 +131,25 @@ module "glue" {
 }
 
 # =============================================================================
-# REDSHIFT MODULE - Data Warehouse
+# REDSHIFT MODULE - Commented out (requires subscription)
 # =============================================================================
-
-module "redshift" {
-  source = "./modules/redshift"
-  
-  name_prefix     = local.name_prefix
-  environment     = var.environment
-  
-  # IAM role for Redshift
-  redshift_role_arn = module.iam.redshift_role_arn
-  
-  # Serverless configuration
-  base_capacity = var.redshift_base_capacity
-  max_capacity  = var.redshift_max_capacity
-  
-  # S3 access for COPY commands
-  data_bucket_arn = module.s3.data_bucket_arn
-  
-  tags = local.common_tags
-}
+# Uncomment this section after enabling Redshift in your AWS account
+# 
+# module "redshift" {
+#   source = "./modules/redshift"
+#   
+#   name_prefix     = local.name_prefix
+#   environment     = var.environment
+#   
+#   redshift_role_arn = module.iam.redshift_role_arn
+#   
+#   base_capacity = var.redshift_base_capacity
+#   max_capacity  = var.redshift_max_capacity
+#   
+#   data_bucket_arn = module.s3.data_bucket_arn
+#   
+#   tags = local.common_tags
+# }
 
 # =============================================================================
 # MONITORING - CloudWatch Alarms and SNS

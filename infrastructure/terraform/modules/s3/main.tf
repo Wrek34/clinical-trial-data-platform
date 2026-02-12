@@ -46,7 +46,7 @@ resource "aws_s3_bucket_public_access_block" "data" {
 resource "aws_s3_bucket_lifecycle_configuration" "data" {
   bucket = aws_s3_bucket.data.id
   
-  # Bronze layer - transition to Glacier after configured days
+  # Bronze layer - transition to cheaper storage over time
   rule {
     id     = "bronze-lifecycle"
     status = "Enabled"
@@ -64,8 +64,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "data" {
       days          = var.bronze_glacier_days
       storage_class = "GLACIER"
     }
-    
-    # Never delete Bronze data (regulatory requirement)
   }
   
   # Silver layer - similar lifecycle
@@ -97,8 +95,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "data" {
       prefix = "gold/"
     }
     
-    # Gold layer stays in standard for performance
-    # Old partitions can be deleted (rebuilt from Silver)
     expiration {
       days = 365
     }
@@ -136,9 +132,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "data" {
 # S3 event notification for ingestion (optional - can be enabled later)
 resource "aws_s3_bucket_notification" "data" {
   bucket = aws_s3_bucket.data.id
-  
-  # This will be configured when Lambda is ready
-  # Keeping as placeholder for the architecture
 }
 
 # Create folder structure (using empty objects)

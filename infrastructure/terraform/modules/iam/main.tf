@@ -62,6 +62,15 @@ resource "aws_iam_role_policy" "lambda" {
           "sns:Publish"
         ]
         Resource = "arn:aws:sns:${var.region}:${var.account_id}:${var.name_prefix}-*"
+      },
+      {
+        Sid    = "SQSAccess"
+        Effect = "Allow"
+        Action = [
+          "sqs:SendMessage",
+          "sqs:GetQueueAttributes"
+        ]
+        Resource = "arn:aws:sqs:${var.region}:${var.account_id}:${var.name_prefix}-*"
       }
     ]
   })

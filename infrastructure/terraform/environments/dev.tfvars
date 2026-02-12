@@ -6,8 +6,8 @@ aws_region  = "us-east-1"
 owner       = "data-engineering"
 
 # S3 Lifecycle - Aggressive cleanup for dev
-bronze_glacier_transition_days = 90
-silver_glacier_transition_days = 180
+bronze_glacier_transition_days = 180
+silver_glacier_transition_days = 210
 temp_expiration_days           = 3
 
 # Glue - Minimal resources

@@ -9,18 +9,14 @@ numpy>=1.26.0
 great-expectations>=0.18.0
 pydantic>=2.5.0
 
-# AWS Glue Development (local testing)
-aws-glue-libs>=4.0.0; python_version >= "3.10"
-
 # Data Generation
 faker>=22.0.0
-mimesis>=12.0.0
 
 # Utilities
 python-dateutil>=2.8.0
 pyyaml>=6.0.0
 click>=8.1.0
-rich>=13.7.0  # Beautiful terminal output
+rich>=13.7.0
 python-dotenv>=1.0.0
 
 # Networking/HTTP

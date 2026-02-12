@@ -58,26 +58,6 @@ output "silver_to_gold_job_name" {
 }
 
 # =============================================================================
-# REDSHIFT OUTPUTS
-# =============================================================================
-
-output "redshift_workgroup_name" {
-  description = "Name of the Redshift Serverless workgroup"
-  value       = module.redshift.workgroup_name
-}
-
-output "redshift_namespace_name" {
-  description = "Name of the Redshift Serverless namespace"
-  value       = module.redshift.namespace_name
-}
-
-output "redshift_endpoint" {
-  description = "Redshift Serverless endpoint"
-  value       = module.redshift.endpoint
-  sensitive   = true
-}
-
-# =============================================================================
 # IAM OUTPUTS
 # =============================================================================
 
@@ -125,11 +105,10 @@ output "deployment_summary" {
       Ingestion: ${module.lambda.ingestion_function_name}
     
     Glue Jobs:
-      Bronze → Silver: ${module.glue.bronze_to_silver_job_name}
-      Silver → Gold:   ${module.glue.silver_to_gold_job_name}
+      Bronze -> Silver: ${module.glue.bronze_to_silver_job_name}
+      Silver -> Gold:   ${module.glue.silver_to_gold_job_name}
     
-    Redshift Serverless:
-      Workgroup: ${module.redshift.workgroup_name}
+    Note: Redshift Serverless not deployed (requires subscription)
     
     =====================================================
   EOT
