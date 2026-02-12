@@ -273,7 +273,7 @@ clinical-trial-data-platform/
 <td>
 <b>Connect</b><br/>
 • GitHub: <a href="https://github.com/Wrek34">@Wrek34</a><br/>
-• LinkedIn: [Your LinkedIn]
+• LinkedIn: <a href="http://linkedin.com/in/ryan-wieczorek/">ryan-wieczorek</a><br/>
 </td>
 </tr>
 </table>
