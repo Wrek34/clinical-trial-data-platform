@@ -292,6 +292,7 @@ clinical-trial-data-platform/
 
 ## 👤 Author
 
+<<<<<<< HEAD
 **Ryan Wieczorek**
 
 - 🎖️ 7 years military healthcare experience
@@ -300,6 +301,23 @@ clinical-trial-data-platform/
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-ryan--wieczorek-0077B5?logo=linkedin)](https://linkedin.com/in/ryan-wieczorek/)
 [![GitHub](https://img.shields.io/badge/GitHub-Wrek34-181717?logo=github)](https://github.com/Wrek34)
+=======
+<table>
+<tr>
+<td>
+<b>Background</b><br/>
+• 7 years military healthcare<br/>
+• Columbia University CS<br/>
+• Healthcare data engineering focus
+</td>
+<td>
+<b>Connect</b><br/>
+• GitHub: <a href="https://github.com/Wrek34">@Wrek34</a><br/>
+• LinkedIn: <a href="http://linkedin.com/in/ryan-wieczorek/">ryan-wieczorek</a><br/>
+</td>
+</tr>
+</table>
+>>>>>>> 7b8b06be7f9e5b3e4198c4cf9b7a93363ca71552
 
 ---
 
