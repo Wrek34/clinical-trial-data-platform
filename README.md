@@ -1,218 +1,230 @@
 # Clinical Trial Data Platform
 
-[![CI/CD Pipeline](https://github.com/YOUR_USERNAME/clinical-trial-data-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/clinical-trial-data-platform/actions/workflows/ci.yml)
+[![CI/CD Pipeline](https://github.com/Wrek34/clinical-trial-data-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Wrek34/clinical-trial-data-platform/actions/workflows/ci.yml)
 [![Infrastructure](https://img.shields.io/badge/IaC-Terraform-purple)](https://www.terraform.io/)
 [![AWS](https://img.shields.io/badge/Cloud-AWS-orange)](https://aws.amazon.com/)
 [![Python](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CDISC](https://img.shields.io/badge/Standard-CDISC%20SDTM-green)](https://www.cdisc.org/)
 
-A production-grade data engineering platform for clinical trial data, built on AWS with CDISC compliance, comprehensive data quality frameworks, and full lineage tracking. Designed to meet pharmaceutical R&D regulatory requirements including FDA 21 CFR Part 11 considerations.
+> A production-grade data engineering platform for pharmaceutical clinical trial data, built on AWS with CDISC compliance, comprehensive data quality frameworks, and complete audit trails.
 
-## 🏗️ Architecture Overview
+---
+
+## 🎯 Project Overview
+
+This platform demonstrates end-to-end data engineering capabilities for regulated pharmaceutical environments:
+
+- **Ingests** raw clinical trial data from multiple sources
+- **Validates** data quality with 20+ automated checks
+- **Transforms** to CDISC SDTM regulatory standards
+- **Serves** analytics-ready dimensional models
+- **Tracks** complete data lineage for audit compliance
+
+### Why This Project?
+
+Clinical trial data engineering presents unique challenges:
+1. **Regulatory Compliance**: FDA 21 CFR Part 11 requires complete audit trails
+2. **Data Standards**: CDISC SDTM is mandatory for drug submissions
+3. **Data Quality**: Patient safety depends on data accuracy
+4. **Scale**: Modern trials generate millions of data points
+
+This platform addresses all four challenges with a modern, cloud-native architecture.
+
+---
+
+## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                        CLINICAL TRIAL DATA PLATFORM                             │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│   DATA SOURCES              MEDALLION ARCHITECTURE              CONSUMERS       │
-│   ────────────              ────────────────────────            ─────────       │
-│                                                                                 │
-│   ┌──────────┐         ┌─────────┐    ┌─────────┐    ┌─────────┐              │
-│   │  Clinical │         │ BRONZE  │    │ SILVER  │    │  GOLD   │   ┌────────┐ │
-│   │  Trials   │────────▶│  (Raw)  │───▶│(Clean)  │───▶│(Serving)│──▶│Redshift│ │
-│   └──────────┘    │    └─────────┘    └─────────┘    └─────────┘   └────────┘ │
-│                   │         │              │              │              │      │
-│   ┌──────────┐    │         ▼              ▼              ▼              ▼      │
-│   │   Lab    │    │    ┌─────────────────────────────────────────────────────┐ │
-│   │ Results  │────┤    │                    AWS S3 DATA LAKE                 │ │
-│   └──────────┘    │    │  s3://clinical-trial-platform-{env}/                │ │
-│                   │    │    ├── bronze/     (raw ingested data)              │ │
-│   ┌──────────┐    │    │    ├── silver/     (validated, standardized)        │ │
-│   │  Vital   │────┤    │    ├── gold/       (analytics-ready)                │ │
-│   │  Signs   │    │    │    └── metadata/   (lineage, quality metrics)       │ │
-│   └──────────┘    │    └─────────────────────────────────────────────────────┘ │
-│                   │                                                             │
-│   ┌──────────┐    │    ┌─────────┐    ┌─────────┐    ┌─────────────────────┐   │
-│   │ Adverse  │────┘    │ Lambda  │    │  Glue   │    │    Data Quality     │   │
-│   │ Events   │         │Ingest   │    │  ETL    │    │  Great Expectations │   │
-│   └──────────┘         └─────────┘    └─────────┘    └─────────────────────┘   │
-│                                                                                 │
-│   ┌─────────────────────────────────────────────────────────────────────────┐  │
-│   │                        GOVERNANCE & COMPLIANCE                          │  │
-│   │  • Data Lineage Tracking    • Audit Logging    • CDISC Compliance      │  │
-│   │  • Quality KPIs             • Encryption       • Access Controls        │  │
-│   └─────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-│   ┌─────────────────────────────────────────────────────────────────────────┐  │
-│   │                        INFRASTRUCTURE                                    │  │
-│   │  • Terraform IaC           • GitHub Actions CI/CD    • Docker           │  │
-│   └─────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     CLINICAL TRIAL DATA PLATFORM                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌─────────────┐     ┌─────────────────────────────────────────────┐   │
+│  │   SOURCE    │     │              AWS DATA LAKE                   │   │
+│  │   SYSTEMS   │     │                                              │   │
+│  │             │     │  ┌─────────┐  ┌─────────┐  ┌─────────┐      │   │
+│  │ • EDC       │────▶│  │ BRONZE  │─▶│ SILVER  │─▶│  GOLD   │      │   │
+│  │ • Labs      │     │  │  (Raw)  │  │(Valid)  │  │(Serving)│      │   │
+│  │ • Devices   │     │  └─────────┘  └─────────┘  └─────────┘      │   │
+│  └─────────────┘     │       │            │            │            │   │
+│                      │       ▼            ▼            ▼            │   │
+│                      │  ┌─────────────────────────────────────────┐ │   │
+│                      │  │         Amazon S3 Data Lake             │ │   │
+│                      │  └─────────────────────────────────────────┘ │   │
+│                      └─────────────────────────────────────────────┘   │
+│                                                                         │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                    PROCESSING LAYER                              │   │
+│  │  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │   │
+│  │  │  Lambda  │    │   Glue   │    │   Glue   │    │ Redshift │  │   │
+│  │  │ Ingest   │    │ Bronze→  │    │ Silver→  │    │Serverless│  │   │
+│  │  │          │    │ Silver   │    │ Gold     │    │          │  │   │
+│  │  └──────────┘    └──────────┘    └──────────┘    └──────────┘  │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                 GOVERNANCE & QUALITY                             │   │
+│  │  • Data Validation (20+ rules)    • CDISC SDTM Compliance       │   │
+│  │  • Lineage Tracking               • Audit Logging                │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🎯 Key Features
+### Medallion Architecture
 
-### Data Engineering
-- **Medallion Architecture**: Bronze → Silver → Gold data layers with clear separation of concerns
-- **CDISC Compliance**: Data models aligned with CDISC SDTM standards (DM, AE, VS, LB domains)
-- **Scalable Ingestion**: Event-driven Lambda functions with automatic retry and dead-letter queues
-- **Efficient Transformations**: AWS Glue PySpark jobs with optimized partitioning strategies
+| Layer | Purpose | Retention | Format |
+|-------|---------|-----------|--------|
+| **Bronze** | Raw data exactly as received | 7 years (regulatory) | Parquet |
+| **Silver** | Validated, CDISC-standardized | 7 years | Parquet |
+| **Gold** | Analytics-ready dimensional model | Rebuild from Silver | Parquet |
 
-### Data Quality & Governance
-- **Validation Framework**: Great Expectations integration with custom clinical data validators
-- **Data Lineage**: End-to-end tracking from source to serving layer
-- **Audit Logging**: Complete audit trail for regulatory compliance
-- **Quality KPIs**: Real-time metrics on data freshness, completeness, and accuracy
+---
 
-### Infrastructure & Operations
-- **Infrastructure as Code**: 100% Terraform-managed AWS resources
-- **CI/CD Pipeline**: Automated testing, linting, and deployment via GitHub Actions
-- **Cost Optimization**: Auto-scaling, lifecycle policies, and resource teardown scripts
-- **Monitoring**: CloudWatch dashboards and SNS alerting
+## 🔬 CDISC Compliance
 
-## 📊 Data Model
-
-The platform implements CDISC SDTM-aligned domains for clinical trial data:
+The platform implements **CDISC SDTM** (Study Data Tabulation Model) standards required by FDA and EMA:
 
 | Domain | Description | Key Variables |
 |--------|-------------|---------------|
-| **DM** | Demographics | USUBJID, SITEID, AGE, SEX, RACE, ARM |
-| **AE** | Adverse Events | AETERM, AESEV, AEREL, AESTDTC, AEENDTC |
-| **VS** | Vital Signs | VSTESTCD, VSORRES, VSORRESU, VSDTC |
-| **LB** | Lab Results | LBTESTCD, LBORRES, LBORNRLO, LBORNRHI |
+| **DM** | Demographics | USUBJID, AGE, SEX, RACE, ARM |
+| **AE** | Adverse Events | AETERM, AESEV, AEREL, AESTDTC |
+| **VS** | Vital Signs | VSTESTCD, VSORRES, VSNRIND |
+| **LB** | Lab Results | LBTESTCD, LBSTRESN, LBNRIND |
 
-See [DATA_MODEL.md](docs/architecture/DATA_MODEL.md) for complete schema documentation.
+---
+
+## ✅ Data Quality Framework
+
+Comprehensive validation framework with 20+ automated checks:
+
+```python
+from data_quality.validators import validate_clinical_data, ValidationStatus
+
+report = validate_clinical_data(df, domain="DM")
+
+if report.status == ValidationStatus.PASSED:
+    promote_to_silver(df)
+else:
+    quarantine_for_review(df, report)
+```
+
+### Sample Validation Rules
+
+| Rule ID | Domain | Description | Severity |
+|---------|--------|-------------|----------|
+| DM_001 | Demographics | USUBJID must be unique | ERROR |
+| DM_003 | Demographics | Age between 0-120 | ERROR |
+| AE_003 | Adverse Events | Severity must be MILD/MODERATE/SEVERE | ERROR |
+| VS_004 | Vital Signs | Values within physiological range | WARNING |
+
+---
+
+## 📊 Analytics Capabilities
+
+Pre-built SQL analytics for the Gold layer:
+
+- **Enrollment Dashboard**: Subjects by site, treatment arm, demographics
+- **Safety Analysis**: Adverse event rates, serious AE tracking
+- **Efficacy Metrics**: Vital signs trends, lab results analysis
+- **Data Quality**: Completeness reports, validation summaries
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- AWS Account with appropriate permissions
+- AWS Account with CLI configured
 - Python 3.11+
 - Terraform 1.5+
-- AWS CLI configured
 
-### Local Development Setup
+### Deploy
 
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/clinical-trial-data-platform.git
+# Clone and navigate
+git clone https://github.com/Wrek34/clinical-trial-data-platform.git
 cd clinical-trial-data-platform
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-
-# Run tests
-make test
-```
-
-### Deploy Infrastructure
-
-```bash
-# Initialize Terraform
+# Deploy infrastructure
 cd infrastructure/terraform
 terraform init
+terraform apply -var-file="environments/dev.tfvars"
 
-# Deploy to dev environment
-terraform workspace new dev
-terraform plan -var-file=environments/dev.tfvars
-terraform apply -var-file=environments/dev.tfvars
+# Generate test data
+cd ../..
+python data/synthetic/generator.py --subjects 500
+
+# Upload to S3
+aws s3 cp data/synthetic/output/ s3://YOUR-BUCKET/bronze/synthetic/ --recursive
 ```
 
-### Generate Synthetic Data
+### Teardown (Avoid Charges)
 
 ```bash
-# Generate test clinical trial data
-python data/synthetic/generator.py --subjects 1000 --output data/synthetic/output/
+terraform destroy -var-file="environments/dev.tfvars"
 ```
+
+---
 
 ## 📁 Project Structure
 
 ```
 clinical-trial-data-platform/
-├── README.md
+├── data/synthetic/           # CDISC-compliant test data generator
 ├── docs/
-│   ├── architecture/           # System design documentation
-│   ├── adr/                    # Architecture Decision Records
-│   └── runbooks/               # Operational guides
-├── infrastructure/
-│   ├── terraform/              # IaC for all AWS resources
-│   └── docker/                 # Container definitions
+│   ├── architecture/         # System design docs
+│   └── adr/                  # Architecture Decision Records
+├── infrastructure/terraform/ # IaC modules (S3, Lambda, Glue, IAM)
 ├── src/
-│   ├── ingestion/              # Lambda ingestion functions
-│   ├── transformation/         # Glue ETL jobs
-│   ├── data_quality/           # Validation & lineage
-│   └── analytics/              # SQL schemas & queries
-├── data/
-│   └── synthetic/              # Test data generation
-├── .github/
-│   └── workflows/              # CI/CD pipelines
-└── scripts/                    # Utility scripts
+│   ├── ingestion/            # Lambda handlers
+│   ├── transformation/       # Glue ETL scripts
+│   ├── data_quality/         # Validation & lineage
+│   └── analytics/            # SQL queries
+└── .github/workflows/        # CI/CD pipelines
 ```
 
-## 🔒 Security & Compliance
+---
 
-This platform is designed with pharmaceutical regulatory requirements in mind:
+## 💰 Cost Optimization
 
-- **Encryption**: All data encrypted at rest (S3 SSE-S3) and in transit (TLS 1.2+)
-- **Access Control**: IAM roles with least-privilege principles
-- **Audit Trail**: Complete logging of all data operations
-- **Data Lineage**: Full traceability from source to destination
-- **HIPAA Considerations**: Designed for PHI handling (synthetic data used in demo)
+| Environment | Monthly Cost | Strategy |
+|-------------|--------------|----------|
+| **Development** | ~$3 | Serverless, auto-pause, aggressive lifecycle |
+| **Production** | ~$350 | Scaled compute, standard retention |
 
-## 📈 Cost Optimization
+---
 
-Estimated monthly costs for development environment:
+## 🛠️ Technology Stack
 
-| Service | Configuration | Est. Cost |
-|---------|--------------|-----------|
-| S3 | < 5GB storage | ~$0.12 |
-| Lambda | < 1M invocations | Free tier |
-| Glue | 2-3 DPU hours/day | ~$1-2 |
-| Redshift Serverless | Auto-pause enabled | ~$0-5 |
-| **Total** | | **~$2-8/month** |
+| Category | Technology |
+|----------|------------|
+| Cloud | AWS (S3, Lambda, Glue, Redshift Serverless) |
+| IaC | Terraform |
+| Language | Python 3.11, PySpark, SQL |
+| CI/CD | GitHub Actions |
+| Testing | pytest |
+| Standards | CDISC SDTM 3.3 |
 
-Use `scripts/teardown_aws.sh` to destroy all resources when not in use.
-
-## 🗺️ Roadmap
-
-- [x] Core data pipeline (Bronze → Silver → Gold)
-- [x] CDISC-compliant data model
-- [x] Data quality framework
-- [x] Terraform infrastructure
-- [x] CI/CD pipeline
-- [ ] Real-time streaming ingestion (Kinesis)
-- [ ] ML feature store integration
-- [ ] Advanced analytics views
-- [ ] Multi-region deployment
+---
 
 ## 📚 Documentation
 
 - [Architecture Overview](docs/architecture/ARCHITECTURE.md)
-- [Data Model Specification](docs/architecture/DATA_MODEL.md)
-- [Deployment Guide](docs/runbooks/DEPLOYMENT.md)
-- [Troubleshooting Guide](docs/runbooks/TROUBLESHOOTING.md)
-
-### Architecture Decision Records
+- [Data Model](docs/architecture/DATA_MODEL.md)
 - [ADR-001: AWS-Native Approach](docs/adr/001-aws-native-approach.md)
 - [ADR-002: Medallion Architecture](docs/adr/002-medallion-architecture.md)
-- [ADR-003: CDISC Compliance Strategy](docs/adr/003-cdisc-compliance.md)
+- [ADR-003: CDISC Compliance](docs/adr/003-cdisc-compliance.md)
 - [ADR-004: Cost Optimization](docs/adr/004-cost-optimization.md)
-
-## 🤝 Contributing
-
-Contributions are welcome! Please read our contributing guidelines and submit pull requests.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-**Note**: This platform uses synthetic clinical trial data for demonstration purposes. No real patient data is used or stored.
+## 👤 Author
+
+Built by a data engineer with 7 years of military healthcare experience and Columbia University CS background.
+
+- GitHub: [@Wrek34](https://github.com/Wrek34)
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
